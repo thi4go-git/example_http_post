@@ -1,6 +1,7 @@
 package com.mycompany;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -8,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -18,14 +20,19 @@ import java.util.logging.Logger;
 
 public class Http_post {
 
-    private static final String URL_BASE = "http://wlcontabilidade.sytes.net:8080";
+    //private static final String URL_BASE = "http://wlcontabilidade.sytes.net:8080";
     private static HttpURLConnection conexaoGeral;
     //
     private static String session;
 
+    //
+    private static final String URL_BASE = "https://api.openai.com/v1/completions";
+    private static final String TOKEN = "Bearer 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";
+    private final String USER_AGENT = "Mozilla/5.0";
+    private static HttpURLConnection conexao;
+
     public static void main(String[] args) throws IOException {
-        logar();
-        sanear();
+        chatGpt();
     }
 
     public static void logar() throws IOException {
@@ -115,6 +122,58 @@ public class Http_post {
         } catch (IOException ex) {
             Logger.getLogger(Http_post.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void chatGpt() {
+        try {
+
+            URL loginUrl = new URL(URL_BASE);
+            conexao = (HttpURLConnection) loginUrl.openConnection();
+            //
+            conexao.setRequestMethod("POST");
+            conexao.setRequestProperty("Content-Type", "application/json");
+            conexao.setRequestProperty("Authorization", "Bearer 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");
+            // Send post request
+
+            String jsonInputString = """
+                                     {
+                                         "model": "text-davinci-003",
+                                         "prompt": "Ricardo",
+                                         "temperature": 0,
+                                         "max_tokens": 1000
+                                     }""";
+
+            conexao.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(conexao.getOutputStream());
+            wr.writeBytes(jsonInputString);
+            wr.flush();
+            wr.close();
+            //
+            int responseCode = conexao.getResponseCode();
+            System.out.println("\nSending 'POST' request to URL : " + URL_BASE);
+            System.out.println("Post parameters : " + jsonInputString);
+            System.out.println("Response Code : " + responseCode);
+            System.out.println("Message: " + conexao.getResponseMessage());
+            //
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(conexao.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            //print result
+            System.out.println(response.toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
