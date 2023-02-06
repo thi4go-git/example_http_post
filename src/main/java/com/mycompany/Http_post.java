@@ -27,7 +27,7 @@ public class Http_post {
 
     //
     private static final String URL_BASE = "https://api.openai.com/v1/completions";
-    private static final String TOKEN = "Bearer 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";
+    private static final String TOKEN = "Bearer meu tokan";
     private final String USER_AGENT = "Mozilla/5.0";
     private static HttpURLConnection conexao;
 
