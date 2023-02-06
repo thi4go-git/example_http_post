@@ -132,7 +132,7 @@ public class Http_post {
             //
             conexao.setRequestMethod("POST");
             conexao.setRequestProperty("Content-Type", "application/json");
-            conexao.setRequestProperty("Authorization", "Bearer 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");
+            conexao.setRequestProperty("Authorization", "Bearer TOKEN aqui");
             // Send post request
 
             String jsonInputString = """
